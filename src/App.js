@@ -1,23 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useState } from "react";
+import { useFetch } from "./useFetch";
+import { Product } from "./Product";
+import { Select } from "./Select";
 
 function App() {
+  const [url, setUrl] = useState("https://fakestoreapi.com/products/");
+
+  const products = useFetch(url);
+
+  const selectHandler = (category) => {
+    category === "all"
+      ? setUrl("https://fakestoreapi.com/products/")
+      : setUrl(`https://fakestoreapi.com/products/category/${category}`);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Select selectHandler={selectHandler} />
+
+      {products.length === 0 ? (
+        <h1>loading...</h1>
+      ) : (
+        products.map((product) => <Product product={product} />)
+      )}
     </div>
   );
 }
